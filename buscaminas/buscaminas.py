@@ -68,12 +68,22 @@ def fin():
         if key == 27:
             quit()
 
-def mostrar(m, f, c):
-    for i in range(f):
-        S = ""
-        for j in range(c):
-            S = S + str(m[i][j].cant) + "  "
-        print(S)
+def ganado():
+    for x in range(0, ancho):
+        for y in range(0, alto):
+            win.addch(y, 2*x, str(matrix[x][y].cant), curses.color_pair(4))
+    while True:
+        key = win.getch()
+        if key == 27:
+            quit()
+
+
+def contarMinas(m):
+    n = 0
+    for x in range(0, ancho):
+        for y in range(0, alto):
+            n = n + ( 1 if isinstance(m[x][y], Numero) and m[x][y].show else 0)
+    return (ancho*alto - n)
 
 curses.initscr()
 curses.start_color()
@@ -127,3 +137,5 @@ while True:
                         win.addch(y, 2*x, str(matrix[x][y].cant), curses.color_pair(2))
                     else:
                         win.addch(y, 2*x, 'X', curses.color_pair(1))
+    if minas == contarMinas(matrix):
+        ganado()
