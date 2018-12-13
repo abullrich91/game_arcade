@@ -2,9 +2,13 @@ import turtle
 import os
 import math
 import random
+import time
 
 assets_path = "space_invaders/assets/"
 sounds_path = "space_invaders/sounds/"
+
+turtle.tracer(0)
+turtle.title("Space Invaders")
 
 # Set up the screen
 wn = turtle.Screen()
@@ -157,6 +161,7 @@ turtle.onkey(fire_bullet, "space")
 
 # Main game loop
 while True:
+    turtle.update()
 
     for enemy in enemies:
         # Move the enemy
