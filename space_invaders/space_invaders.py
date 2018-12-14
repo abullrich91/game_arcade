@@ -133,6 +133,7 @@ def move_right():
 def fire_bullet():
     # Declare bullet state as global if it needs changed
     global bulletstate
+    os.system("afplay space_invaders/sounds/laser.wav&")
 
     if bulletstate == "ready":
         bulletstate = "fire"
@@ -141,6 +142,65 @@ def fire_bullet():
         y = player.ycor()
         bullet.setposition(x, y + 10)
         bullet.showturtle()
+
+
+# Child of Turtle
+class Sprite(turtle.Turtle):
+    def __init__(self, spriteshape, color, startx, starty):
+        turtle.Turtle.__init__(self, shape=spriteshape)
+        self.speed(0)
+        self.penup()
+        self.color(color)
+        self.fd(0)
+        self.goto(startx, starty)
+        self.speed = 1
+
+    def move(self):
+        self.fd(self.speed)
+
+        # Boundary checking
+        if self.xcor() > 290:
+            self.setx(290)
+            self.rt(60)
+
+        if self.xcor() < -290:
+            self.setx(-290)
+            self.rt(60)
+
+        if self.ycor() > 290:
+            self.sety(290)
+            self.rt(60)
+
+        if self.ycor() < -290:
+            self.sety(-290)
+            self.rt(60)
+
+    def is_collision(self, other):
+        distance = math.sqrt(math.pow(self.xcor() - other.xcor(), 2) + math.pow(self.ycor() - other.ycor(), 2))
+        return distance < 20
+
+
+# Create Particle sprite
+class Particle(Sprite):
+    def __init__(self, spriteshape, color, startx, starty):
+        Sprite.__init__(self, spriteshape, color, startx, starty)
+        self.shapesize(stretch_wid=0.1, stretch_len=0.1, outline=None)
+        self.goto(-1000, -1000)
+        self.frame = 0
+
+    def explode(self, startx, starty):
+        self.goto(startx, starty)
+        self.setheading(random.randint(0, 360))
+        self.frame = 1
+
+    def move(self):
+        if self.frame > 0:
+            self.frame += 1
+            self.fd(10)
+
+        if self.frame > 10:
+            self.frame = 0
+            self.goto(-1000, -1000)
 
 
 # Detect turtle collision
@@ -158,6 +218,10 @@ turtle.listen()
 turtle.onkey(move_left, "Left")
 turtle.onkey(move_right, "Right")
 turtle.onkey(fire_bullet, "space")
+
+particles = []
+for i in range(20):
+    particles.append(Particle("circle", "orange", 0, 0))
 
 # Main game loop
 while True:
@@ -186,6 +250,9 @@ while True:
 
         # Check for collision between bullet and enemy
         if isCollision(bullet, enemy):
+            os.system("afplay space_invaders/sounds/explosion.wav&")
+            for particle in particles:
+                particle.explode(bullet.xcor(), bullet.ycor())
             # Reset bullet
             bullet.hideturtle()
             bulletstate = "ready"
@@ -219,6 +286,9 @@ while True:
     if bullet.ycor() > 275:
         bullet.hideturtle()
         bulletstate = "ready"
+
+    for particle in particles:
+        particle.move()
 
 
 

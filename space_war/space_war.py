@@ -13,12 +13,13 @@ turtle.ht()
 turtle.setundobuffer(1)
 # Regulates the speed of drawing
 turtle.tracer(0)
+turtle.title("Space War")
 
 
 # Child of Turtle
 class Sprite(turtle.Turtle):
     def __init__(self, spriteshape, color, startx, starty):
-        turtle.Turtle.__init__(self, shape = spriteshape)
+        turtle.Turtle.__init__(self, shape=spriteshape)
         self.speed(0)
         self.penup()
         self.color(color)
@@ -55,6 +56,7 @@ class Sprite(turtle.Turtle):
 class Player(Sprite):
     def __init__(self, spriteshape, color, startx, starty):
         Sprite.__init__(self, spriteshape, color, startx, starty)
+        self.shapesize(stretch_wid=0.6, stretch_len=1.1, outline=None)
         self.speed = 0
         self.lives = 3
 
@@ -115,7 +117,7 @@ class Missile(Sprite):
         Sprite.__init__(self, spriteshape, color, startx, starty)
         self.speed = 20
         self.status = "ready"
-        self.shapesize(stretch_wid=0.3, stretch_len=0.4, outline=None)
+        self.shapesize(stretch_wid=0.2, stretch_len=0.4, outline=None)
         self.goto(-1000, 1000)
 
     def fire(self):
@@ -137,6 +139,29 @@ class Missile(Sprite):
         if self.xcor() < -290 or self.xcor() > 290 or self.ycor() < -290 or self.ycor() > 290:
             self.goto(-1000, 1000)
             self.status = "ready"
+
+
+# Create Particle sprite
+class Particle(Sprite):
+    def __init__(self, spriteshape, color, startx, starty):
+        Sprite.__init__(self, spriteshape, color, startx, starty)
+        self.shapesize(stretch_wid=0.1, stretch_len=0.1, outline=None)
+        self.goto(-1000, -1000)
+        self.frame = 0
+
+    def explode(self, startx, starty):
+        self.goto(startx, starty)
+        self.setheading(random.randint(0, 360))
+        self.frame = 1
+
+    def move(self):
+        if self.frame > 0:
+            self.frame += 1
+            self.fd(10)
+
+        if self.frame > 10:
+            self.frame = 0
+            self.goto(-1000, -1000)
 
 
 class Game:
@@ -190,6 +215,10 @@ allies = []
 for i in range(6):
     allies.append(Ally("square", "blue", 100, 0))
 
+particles = []
+for i in range(20):
+    particles.append(Particle("circle", "orange", 0, 0))
+
 # Keyboard bindings
 turtle.onkey(player.turn_left, "Left")
 turtle.onkey(player.turn_right, "Right")
@@ -217,6 +246,8 @@ while True:
             enemy.goto(x, y)
             game.score -= 100
             game.show_status()
+            for particle in particles:
+                particle.explode(player.xcor(), player.ycor())
 
         # Check for missile collision
         if missile.is_collision(enemy):
@@ -229,6 +260,9 @@ while True:
             # Increase the score
             game.score += 100
             game.show_status()
+            # Explosion
+            for particle in particles:
+                particle.explode(missile.xcor(), missile.ycor())
 
     for ally in allies:
         ally.move()
@@ -237,6 +271,8 @@ while True:
             x = random.randint(-250, 250)
             y = random.randint(-250, 250)
             ally.goto(x, y)
+            for particle in particles:
+                particle.explode(player.xcor(), player.ycor())
 
         # Check for missile collision
         if missile.is_collision(ally):
@@ -249,6 +285,11 @@ while True:
             # Decrease the score
             game.score -= 50
             game.show_status()
+            for particle in particles:
+                particle.explode(missile.xcor(), missile.ycor())
+
+    for particle in particles:
+        particle.move()
 
 
 delay = raw_input("Press enter to finish")
