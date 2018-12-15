@@ -59,7 +59,7 @@ def move_fig(fp, key, d):
 # Deletes full line and increases score
 def chk_board(score):
     for i in range(17):
-        if all((win.inch(i, x) == 'X' for x in range(1, 17))):
+        if all(chr(win.inch(i, x) & 0xFF) == 'X' for x in range(1, 17)):
             win.deleteln()
             win.move(1, 1)
             win.insertln()
