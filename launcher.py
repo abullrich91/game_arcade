@@ -37,7 +37,7 @@ for index, option in enumerate(legend):
     win.addstr(13 + index, 8, option, curses.color_pair(1))
 
 win.addstr(16, 2, "Tetris"        , curses.color_pair(2))
-legend = ["Q = exit", "Up = rote", "Arrowkeys = move"]
+legend = ["Q = exit", "Up = rotate", "Arrowkeys = move"]
 for index, option in enumerate(legend):
     win.addstr(17 + index, 8, option, curses.color_pair(1))
 
