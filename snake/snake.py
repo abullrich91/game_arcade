@@ -71,8 +71,8 @@ while True:
         while food is None:
             # Randomizes new food position
             nf = [
-                random.randint(1, sh - 1),
-                random.randint(1, sw - 1)
+                random.randint(1, sh / 2),
+                random.randint(1, sw / 4)
             ]
 
             food = nf if nf not in snake else None
