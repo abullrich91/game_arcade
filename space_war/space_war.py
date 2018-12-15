@@ -127,7 +127,8 @@ class Missile(Sprite):
     def fire(self):
         if self.status == "ready":
             # Play missile sound
-            os.system("afplay space_war/sounds/laser.wav&")
+            if os.name == 'posix':
+                os.system("afplay space_war/sounds/laser.wav&")
             self.goto(player.xcor(), player.ycor())
             self.setheading(player.heading())
             self.status = "firing"
@@ -275,7 +276,8 @@ while flag:
         # Check for missile collision
         if missile.is_collision(enemy):
             # Play explosion sound
-            os.system("afplay space_war/sounds/explosion.wav&")
+            if os.name == 'posix':
+                os.system("afplay space_war/sounds/explosion.wav&")
             x = random.randint(-250, 250)
             y = random.randint(-250, 250)
             enemy.goto(x, y)
@@ -300,7 +302,8 @@ while flag:
         # Check for missile collision
         if missile.is_collision(ally):
             # Play explosion sound
-            os.system("afplay space_war/sounds/explosion.wav&")
+            if os.name == 'posix':
+                os.system("afplay space_war/sounds/explosion.wav&")
             x = random.randint(-250, 250)
             y = random.randint(-250, 250)
             ally.goto(x, y)

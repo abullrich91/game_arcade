@@ -140,7 +140,8 @@ def fire_bullet():
     global bulletstate
 
     if bulletstate == "ready":
-        os.system("afplay space_invaders/sounds/laser.wav&")
+        if os.name == 'posix':
+            os.system("afplay space_invaders/sounds/laser.wav&")
         bulletstate = "fire"
         # Move the bullet to just above the player
         x = player.xcor()
@@ -240,6 +241,8 @@ for i in range(20):
 # Main game loop
 while flag:
     turtle.update()
+    if os.name != 'posix':
+        time.sleep(0.02)
 
     for enemy in enemies:
         # Move the enemy
@@ -264,7 +267,8 @@ while flag:
 
         # Check for collision between bullet and enemy
         if isCollision(bullet, enemy):
-            os.system("afplay space_invaders/sounds/explosion.wav&")
+            if os.name == 'posix':
+                os.system("afplay space_invaders/sounds/explosion.wav&")
             for particle in particles:
                 particle.explode(bullet.xcor(), bullet.ycor())
             # Reset bullet
