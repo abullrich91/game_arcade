@@ -102,6 +102,4 @@ curses.endwin()
 if os.name == 'posix':
     cwd = os.getcwd()
     subprocess.call(['python2.7', 'launcher.py'])
-else:
-    subprocess.Popen("python " + 'launcher.py')
 print('\n Thanks for playing, your score: ' + str(score) + '\n')

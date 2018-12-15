@@ -202,7 +202,7 @@ class Game:
         legend = ["Q = exit", "SpaceBar = shoot", "Arrowkeys = move"]
         for index, option in enumerate(legend):
             self.pen.penup()
-            self.pen.goto(250, 310 - index * 10)
+            self.pen.goto(250, 330 - index * 16)
             self.pen.write(option, font=("Arial", 16, "normal"))
 
 

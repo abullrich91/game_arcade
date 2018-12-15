@@ -70,4 +70,4 @@ while True:
                             cwd = os.getcwd()
                             subprocess.call(['python2.7', listaJuegos[i]])
                         else:
-                            subprocess.Popen("python " + listaJuegos[i])
+                            subprocess.Popen("python " + listaJuegos[i], creationflags=subprocess.CREATE_NEW_CONSOLE)
