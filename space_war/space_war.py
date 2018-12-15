@@ -11,6 +11,10 @@ turtle.speed(0)
 turtle.bgcolor("black")
 turtle.ht()
 turtle.setundobuffer(1)
+
+if os.name == 'posix':
+    os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
+
 # Regulates the speed of drawing
 turtle.tracer(0)
 turtle.title("Space War")
@@ -193,6 +197,14 @@ class Game:
         self.pen.goto(-300, 310)
         self.pen.write(msg, font=("Arial", 16, "normal"))
 
+    def show_legend(self):
+        self.pen.undo()
+        legend = ["Q = exit", "SpaceBar = shoot", "Arrowkeys = move"]
+        for index, option in enumerate(legend):
+            self.pen.penup()
+            self.pen.goto(250, 310 - index * 10)
+            self.pen.write(option, font=("Arial", 16, "normal"))
+
 
 # Create game object
 game = Game()
@@ -200,6 +212,7 @@ game.draw_border()
 
 # Show the game status
 game.show_status()
+game.show_legend()
 
 # Create player Sprite
 player = Player("triangle", "white", 0, 0)
@@ -219,16 +232,26 @@ particles = []
 for i in range(20):
     particles.append(Particle("circle", "orange", 0, 0))
 
+flag = True
+
+
+def game_over():
+    global flag
+    flag = False
+
+
 # Keyboard bindings
 turtle.onkey(player.turn_left, "Left")
 turtle.onkey(player.turn_right, "Right")
 turtle.onkey(player.accelerate, "Up")
 turtle.onkey(player.decelerate, "Down")
 turtle.onkey(missile.fire, "space")
+turtle.onkey(game_over, "q")
 turtle.listen()
 
+
 # Main game loop
-while True:
+while flag:
     turtle.update()
     time.sleep(0.02)
 
@@ -291,5 +314,4 @@ while True:
     for particle in particles:
         particle.move()
 
-
-delay = raw_input("Press enter to finish")
+turtle.bye()

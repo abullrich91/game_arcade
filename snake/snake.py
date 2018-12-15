@@ -1,12 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import random
 import curses
+import subprocess
+import os
 
 # Initializes screen and sets the cursor to 0 so it doesn't show on the screen
 s = curses.initscr()
 curses.curs_set(0)
 
 # Sets screen height and width
-sh, sw = s.getmaxyx()
+sh, sw = 18, 36
 
 # Creates new window and initializes it on the top left of the screen
 w = curses.newwin(sh, sw, 0, 0)
@@ -34,15 +39,15 @@ w.addch(food[0], food[1], curses.ACS_PI)
 key = curses.KEY_RIGHT
 
 while True:
+    w.border('|', '|', '-', '-', '+', '+', '+', '+')
     next_key = w.getch()
     key = key if next_key == -1 else next_key
 
     # You lose if the snake is at the top or the bottom of the screen
     # or if the snake touches the left or right border of the screen
     # or if the snake is within itself
-    if snake[0][0] in [0, sh] or snake[0][1] in [0, sw] or snake[0] in snake[1:]:
-        curses.endwin()
-        quit()
+    if snake[0][0] in [0, sh-1] or snake[0][1] in [0, sw-1] or snake[0] in snake[1:]:
+        break
 
     # Determines the head of the snake
     new_head = [snake[0][0], snake[0][1]]
@@ -56,6 +61,8 @@ while True:
         new_head[1] += -1
     if key == curses.KEY_RIGHT:
         new_head[1] += 1
+    if key == ord("q"):
+        break
 
     snake.insert(0, new_head)
 
@@ -77,3 +84,10 @@ while True:
 
     w.addch(snake[0][0], snake[0][1], curses.ACS_CKBOARD)
 
+# Back to console
+curses.endwin()
+if os.name == 'posix':
+    cwd = os.getcwd()
+    subprocess.call(['python2.7', 'launcher.py'])
+else:
+    subprocess.Popen("python " + 'launcher.py')

@@ -8,10 +8,15 @@ assets_path = "space_invaders/assets/"
 sounds_path = "space_invaders/sounds/"
 
 turtle.tracer(0)
+turtle.speed(0)
 turtle.title("Space Invaders")
 
 # Set up the screen
 wn = turtle.Screen()
+
+if os.name == 'posix':
+    os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
+
 wn.bgcolor("black")
 wn.title("Space Invaders")
 wn.bgpic("%sspace_invaders_background.gif" % assets_path)
@@ -133,9 +138,9 @@ def move_right():
 def fire_bullet():
     # Declare bullet state as global if it needs changed
     global bulletstate
-    os.system("afplay space_invaders/sounds/laser.wav&")
 
     if bulletstate == "ready":
+        os.system("afplay space_invaders/sounds/laser.wav&")
         bulletstate = "fire"
         # Move the bullet to just above the player
         x = player.xcor()
@@ -213,18 +218,27 @@ def isCollision(t1, t2):
         return False
 
 
+flag = True
+
+
+def game_over():
+    global flag
+    flag = False
+
+
 # Create keyboard bindings
 turtle.listen()
 turtle.onkey(move_left, "Left")
 turtle.onkey(move_right, "Right")
 turtle.onkey(fire_bullet, "space")
+turtle.onkey(game_over, "q")
 
 particles = []
 for i in range(20):
     particles.append(Particle("circle", "orange", 0, 0))
 
 # Main game loop
-while True:
+while flag:
     turtle.update()
 
     for enemy in enemies:
@@ -291,5 +305,4 @@ while True:
         particle.move()
 
 
-
-delay = raw_input("Press enter to finish.")
+turtle.bye()

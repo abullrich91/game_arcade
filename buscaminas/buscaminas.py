@@ -1,5 +1,7 @@
 import curses
 import random
+import subprocess
+import os
 
 class Mina:
     show = False
@@ -63,19 +65,21 @@ def fin():
     for x in range(0, ancho):
         for y in range(0, alto):
             win.addch(y, 2*x, str(matrix[x][y].cant), curses.color_pair(3))
-    while True:
+    while flag:
         key = win.getch()
-        if key == 27:
-            quit()
+        if key == ord('q'):
+            global flag
+            flag = False
 
 def ganado():
     for x in range(0, ancho):
         for y in range(0, alto):
             win.addch(y, 2*x, str(matrix[x][y].cant), curses.color_pair(4))
-    while True:
+    while flag:
         key = win.getch()
-        if key == 27:
-            quit()
+        if key == ord('q'):
+            global flag
+            flag = False
 
 
 def contarMinas(m):
@@ -111,11 +115,13 @@ for x in range(0, ancho):
         #win.addch(y, 2*x, str(matrix[x][y].cant))
         win.addch(y, 2*x, 'X', curses.color_pair(1))
 
-while True:
+flag = True
+
+while flag:
     key = win.getch()
 
-    if key == 27:
-        quit()
+    if key == ord("q"):
+        flag = False
 
     if key == curses.KEY_MOUSE:
         _, mx, my, _, b = curses.getmouse()
@@ -139,3 +145,11 @@ while True:
                         win.addch(y, 2*x, 'X', curses.color_pair(1))
     if minas == contarMinas(matrix):
         ganado()
+
+# Back to console
+curses.endwin()
+if os.name == 'posix':
+    cwd = os.getcwd()
+    subprocess.call(['python2.7', 'launcher.py'])
+else:
+    subprocess.Popen("python " + 'launcher.py')

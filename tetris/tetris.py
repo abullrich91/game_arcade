@@ -3,6 +3,8 @@
 
 import curses
 from random import randrange
+import subprocess
+import os
 
 curses.initscr()
 curses.curs_set(0)
@@ -67,17 +69,21 @@ def chk_board(score):
     return score
 
 
+flag = True
+
 # x, y rotate figure
 fig_pos = [8, 3, 0, 1]
 score = put_fig(fig_pos, 1, fig_pos[3]) ^ 1
 win.timeout(300)
 # Main loop
-while 1:
+while flag:
     win.border('|', '|', '-', '-', '+', '+', '+', '+')
     win.addstr(0, 2, 'Score: ' + str(score) + ' ')
     key = win.getch()
-    if key == 27:
+
+    if key == ord("q"):
         break
+
     put_fig(fig_pos, 0, fig_pos[3])
     move_fig(fig_pos, key, 1)
     if not put_fig(fig_pos, 1, fig_pos[3]):
@@ -93,4 +99,9 @@ while 1:
 
 # Back to console
 curses.endwin()
+if os.name == 'posix':
+    cwd = os.getcwd()
+    subprocess.call(['python2.7', 'launcher.py'])
+else:
+    subprocess.Popen("python " + 'launcher.py')
 print('\n Thanks for playing, your score: ' + str(score) + '\n')

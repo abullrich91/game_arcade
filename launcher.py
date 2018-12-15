@@ -27,16 +27,34 @@ win.border('|', '|', '+', '+', '.', '.')
 win.addstr(2, ancho/2 - 10, "GAME ARCADE", curses.color_pair(1))
 
 win.addstr(8, 2, "Snake"          , curses.color_pair(2))
-win.addstr(10, 2, "Buscaminas"    , curses.color_pair(2))
-win.addstr(12, 2, "Tetris"        , curses.color_pair(2))
-win.addstr(14, 2, "Space Invaders", curses.color_pair(2))
-win.addstr(16, 2, "Space War     ", curses.color_pair(2))
+legend = ["Q = exit", "Arrowkeys = move"]
+for index, option in enumerate(legend):
+    win.addstr(9 + index, 8, option, curses.color_pair(1))
+
+win.addstr(12, 2, "Buscaminas"    , curses.color_pair(2))
+legend = ["Q = exit", "Click = check for mine"]
+for index, option in enumerate(legend):
+    win.addstr(13 + index, 8, option, curses.color_pair(1))
+
+win.addstr(16, 2, "Tetris"        , curses.color_pair(2))
+legend = ["Q = exit", "Up = rote", "Arrowkeys = move"]
+for index, option in enumerate(legend):
+    win.addstr(17 + index, 8, option, curses.color_pair(1))
+
+win.addstr(20, 2, "Space Invaders", curses.color_pair(2))
+legend = ["Q = exit", "SpaceBar = shoot", "Arrowkeys = move"]
+for index, option in enumerate(legend):
+    win.addstr(21 + index, 8, option, curses.color_pair(1))
+
+win.addstr(24, 2, "Space War     ", curses.color_pair(2))
+for index, option in enumerate(legend):
+    win.addstr(25 + index, 8, option, curses.color_pair(1))
 
 
 while True:
     key = win.getch()
 
-    if key == 27:
+    if key == ord('q'):
         quit()
 
     if key == curses.KEY_MOUSE:
@@ -50,8 +68,6 @@ while True:
                     if 6+4*i < my < 10+4*i:
                         if os.name == 'posix':
                             cwd = os.getcwd()
-                            os.system(
-                                "osascript -e 'tell application \"Terminal\" to do script \"cd {0} && python2.7 {1}\" activate'".format(
-                                    cwd, listaJuegos[i]))
+                            subprocess.call(['python2.7', listaJuegos[i]])
                         else:
-                            subprocess.Popen("python " + listaJuegos[i], creationflags=subprocess.CREATE_NEW_CONSOLE)
+                            subprocess.Popen("python " + listaJuegos[i])
